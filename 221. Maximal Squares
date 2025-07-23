@@ -1,0 +1,47 @@
+// we can expend a square only when, the right , down and the bottom-right values are 1
+
+
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>> v;
+
+    int dfs(int i , int j , vector<vector<char>>& matrix) {
+        if(i >= n || j >= m) {
+            return 0 ; 
+        }
+        if(v[i][j] != -1) {
+            return v[i][j] ; 
+        }
+
+        int down = dfs(i + 1 , j , matrix) ; 
+        int right = dfs(i , j + 1, matrix) ; 
+        int diag = dfs(i+ 1, j + 1, matrix) ; 
+
+        if(matrix[i][j] == '1' ) {
+            return v[i][j] =   1 + min({down , right , diag}) ;
+        }
+        else {
+           return  v[i][j] = 0 ; 
+        }
+
+    }
+
+
+
+    int maximalSquare(vector<vector<char>>& matrix) {
+        n = matrix.size();
+        m = matrix[0].size();
+        int cnt = 0;
+        v = vector<vector<int>>(n, vector<int>(m, -1));
+
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0; j < m ; j++) {
+                cnt = max(cnt , dfs(i , j , matrix)) ; 
+            }
+        }
+
+        return cnt * cnt ;
+
+    }
+};
