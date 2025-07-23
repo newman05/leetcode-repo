@@ -21,7 +21,7 @@ public:
         return helper(0, 1, satisfaction);  
     }
 };
-// this solution will TLE due the input size, hence I will optimize it by dp
+// this solution will give TLE due to the input size, hence I will optimize it by dp
 
 // DP solution (0-1 Knapsack logic)
 class Solution {
