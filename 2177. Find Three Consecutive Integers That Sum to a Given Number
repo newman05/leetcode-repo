@@ -1,0 +1,15 @@
+// tagged as a medium, but is really a easy problem 
+
+class Solution {
+public:
+    vector<long long> sumOfThree(long long num) {
+        long long ans = 0 ; 
+        if((num %3)) {
+            return {} ; 
+        }
+        else {
+            return {num / 3 - 1, num/ 3 , num/3 + 1}; 
+        }
+
+    }
+};
