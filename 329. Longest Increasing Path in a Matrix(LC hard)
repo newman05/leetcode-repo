@@ -1,0 +1,42 @@
+//path traversal, dfs
+class Solution {
+public:
+    int n, m;
+    vector<vector<int>>v ; 
+
+    int dfs(int i, int j, vector<vector<int>>& matrix) {
+        int up = 0, down = 0, left = 0, right = 0;
+
+        if(v[i][j] != -1){
+            return v[i][j] ; 
+        }
+
+        if (i > 0 && matrix[i-1][j] > matrix[i][j])
+            up = dfs(i-1, j, matrix);
+        if (i < n-1 && matrix[i+1][j] > matrix[i][j])
+            down = dfs(i+1, j, matrix);
+        if (j > 0 && matrix[i][j-1] > matrix[i][j])
+            left = dfs(i, j-1, matrix);
+        if (j < m-1 && matrix[i][j+1] > matrix[i][j])
+            right = dfs(i, j+1, matrix);
+
+        return  v[i][j] =   1 + max({up, down, left, right});
+    }
+
+    int longestIncreasingPath(vector<vector<int>>& matrix) {
+        n = matrix.size();
+        m = matrix[0].size();
+
+        int ans = 0;
+        v = vector<vector<int>>(n, vector<int>(m, -1));
+
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                ans = max(ans, dfs(i, j, matrix));
+            }
+        }
+
+        return ans;
+    }
+};
