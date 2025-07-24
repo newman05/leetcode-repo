@@ -1,4 +1,4 @@
-// we can expend a square only when, the right , down and the bottom-right values are 1
+// we can expand a square only when, the right , down and the bottom-right values are 1
 
 
 class Solution {
