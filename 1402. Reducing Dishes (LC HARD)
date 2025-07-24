@@ -49,7 +49,7 @@ public:
         return helper(0, 1, satisfaction);  
     }
 };
-// will get accepted, but a follow up more optimized approach maybe asked.
+// will get accepted, but a follow up,a bit more optimized approach might be asked.
 
 
 // Greedy solution, beats 100% runtime
