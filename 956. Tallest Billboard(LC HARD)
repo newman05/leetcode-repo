@@ -1,0 +1,26 @@
+class Solution {
+public:
+    unordered_map<int, int> dp[21]; 
+
+    int helper(int i, int diff, vector<int>& rods) {
+        if (i == rods.size()) {
+
+            if(diff == 0 ) {
+                return 0 ; 
+            }
+            return INT_MIN ; 
+        }
+
+        if (dp[i].count(diff)) return dp[i][diff];
+
+        int skip = helper(i + 1, diff, rods);
+        int addLeft = helper(i + 1, diff + rods[i], rods);
+        int addRight = helper(i + 1, diff - rods[i], rods) + rods[i];
+
+        return dp[i][diff] = max({skip, addLeft, addRight});
+    }
+
+    int tallestBillboard(vector<int>& rods) {
+        return helper(0, 0, rods);
+    }
+};
