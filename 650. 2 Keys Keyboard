@@ -1,0 +1,27 @@
+//0-1 knapsack
+
+
+class Solution {
+public:
+    int ans = INT_MAX;
+
+    void helper(int curr, int clipboard, int steps, int target) {
+        if (curr > target) return;
+        if (curr == target) {
+            ans = min(ans, steps);
+            return;
+        }
+
+        if (clipboard > 0)
+            helper(curr + clipboard, clipboard, steps + 1, target);
+
+        helper(curr + curr, curr, steps + 2, target);
+    }
+
+    int minSteps(int n) {
+        if (n == 1) return 0;
+
+        helper(1, 0, 0, n);  
+        return ans;
+    }
+};
