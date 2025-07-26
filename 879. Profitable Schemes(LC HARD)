@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int MOD = 1e9 + 7;
+    long long dp[101][101][101]; 
+
+    long long helper(int i, int people, int profit, int n, int minProfit, vector<int>& group, vector<int>& prof) {
+        if (i == group.size()) {
+            return (profit >= minProfit) ? 1 : 0;
+        }
+
+        if (dp[i][people][profit] != -1) {
+            return dp[i][people][profit];
+        }
+
+        long long ways = 0;
+
+        ways += helper(i + 1, people, profit, n, minProfit, group, prof);
+        ways %= MOD;
+
+        if (people + group[i] <= n) {
+            int newProfit = min(minProfit, profit + prof[i]); //do this to keep dp array not go out of bounds
+            ways += helper(i + 1, people + group[i], profit+prof[i], n, minProfit, group, prof);
+            ways %= MOD;
+        }
+
+        return dp[i][people][profit] = ways;
+    }
+
+    int profitableSchemes(int n, int minProfit, vector<int>& group, vector<int>& profit) {
+        memset(dp, -1, sizeof(dp));
+        return helper(0, 0, 0, n, minProfit, group, profit);
+    }
+};
