@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int maximumSum(vector<int>& arr) {
+        int n = arr.size();
+        int keep = arr[0];       
+        int deleted = -1000;   
+        int ans = arr[0];
+
+        for (int i = 1; i < n; ++i) {
+            deleted = max(deleted + arr[i], keep);  
+            keep = max(keep + arr[i], arr[i]);     
+            ans = max({ans, keep, deleted});
+      a  }
+
+        return ans;
+    }
+};
