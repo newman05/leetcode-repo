@@ -1,0 +1,38 @@
+class Solution {
+public:
+
+    int dp[10001][101][2] ; 
+
+    int helper(int i  , int curr , int n , vector<int>& prices , int k , bool flag) {
+        if(i == n || curr >=k ) {
+            return 0 ; 
+        }
+
+        if(dp[i][curr][flag] != -1) {
+            return dp[i][curr][flag] ;
+        }
+        int profit = 0 ; 
+
+        if(flag) {
+            int buy = -prices[i] + helper(i + 1, curr , n , prices , k , false) ; 
+            int skip = helper(i + 1 , curr , n , prices , k,  true) ;
+            profit = max(buy , skip) ;  
+        }
+        else {
+            int sell = prices[i] + helper(i + 1, curr + 1, n , prices , k , true) ; 
+            int skipp = helper(i + 1 , curr , n , prices , k  ,false); 
+            profit = max(sell , skipp) ;  
+        }
+        return dp[i][curr][flag] = profit ; 
+    }
+
+    int maxProfit(int k, vector<int>& prices) {
+        int n = prices.size() ; 
+
+        memset(dp , -1 , sizeof(dp)) ; 
+
+
+        return helper(0, 0, n , prices , k , true ) ; 
+
+    }
+};
