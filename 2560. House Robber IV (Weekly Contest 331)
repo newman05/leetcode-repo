@@ -1,0 +1,81 @@
+// recursion with DP will give TLE
+
+class Solution {
+public:
+    vector<vector<int>> dp;
+
+    int helper(int i, int k, vector<int>& nums) {
+        if (k == 0)
+            return 0;
+        if (i >= nums.size())
+            return 1e9;
+
+        if (dp[i][k] != -1)
+            return dp[i][k];
+
+        int take = max(nums[i], helper(i + 2, k - 1, nums));
+
+        int skip = helper(i + 1, k, nums);
+
+        return dp[i][k] = min(take, skip);
+    }
+
+    int minCapability(vector<int>& nums, int k) {
+        int n = nums.size() ; 
+        dp.assign(n + 1, vector<int>(k + 1, -1));
+        return helper(0, k, nums);
+    }
+};
+
+
+// optimal solution
+// binary search + greedy approach
+
+// bs on answer space 
+class Solution {
+public:
+
+    bool canrob(vector<int>& nums , int mid , int k) {
+        int i = 0 ;
+        int ok = 0  ;
+
+        while(i < nums.size()) {
+            if(nums[i] <= mid) {
+                ok++ ; 
+                i = i + 2 ; 
+            }
+            else {
+                i = i + 1; 
+            }
+        }
+        if(ok >=k ) {
+            return 1 ; 
+        }
+        return 0 ; 
+    }
+
+    int minCapability(vector<int>& nums, int k) {
+        int n = nums.size() ; 
+        int cnt = 0 ;
+
+        int l= *min_element(nums.begin() , nums.end())  ;
+        int r = *max_element(nums.begin() , nums.end()) ; 
+        
+        while(l <= r) {
+            int mid = (l + r) / 2 ; 
+
+            if(canrob( nums, mid , k )) {
+                cnt = mid ; 
+                r = mid -1 ;
+            }
+            else {
+                l = mid + 1 ;  
+            }
+
+        }
+
+        return cnt ; 
+
+
+    }
+};
