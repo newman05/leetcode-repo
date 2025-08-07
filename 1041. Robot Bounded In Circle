@@ -1,0 +1,29 @@
+class Solution {
+public:
+    bool isRobotBounded(string instructions) {
+        int n = instructions.size() ; 
+        vector<pair<int ,int>>v = {{0 ,1 } , {1 , 0}  , {0 , -1} , {-1 ,0}} ; 
+        int dir =0 ;
+        int x = 0 , y = 0 ;
+
+        for(auto it : instructions) {
+            if(it== 'G') {
+                x += v[dir].first ; 
+                y += v[dir].second ; 
+            }
+            if(it == 'L') {
+                dir = (dir + 3) % 4 ; 
+            }
+            if(it == 'R') {
+                dir = (dir + 1) % 4 ; 
+            }
+        }
+
+        if(x == 0 && y == 0 || dir != 0 ) {
+            return true ; 
+        }
+        return false ; 
+
+
+    }
+};
