@@ -1,0 +1,29 @@
+class Solution {
+public:
+    double dp[200][200]; 
+    bool vis[200][200];
+
+    double helper(int a, int b) {
+        if (a <= 0 && b <= 0) return 0.5;
+        if (a <= 0) return 1.0;       
+        if (b <= 0) return 0.0;            
+
+        if (vis[a][b]) return dp[a][b];
+        vis[a][b] = true;
+
+        dp[a][b] = 0.25 * (
+            helper(a - 4, b) +
+            helper(a - 3, b - 1) +
+            helper(a - 2, b - 2) +
+            helper(a - 1, b - 3)
+        );
+        return dp[a][b];
+    }
+
+    double soupServings(int n) {
+        if (n > 4800) return 1.0; 
+        int m = (n + 24) / 25;  
+        memset(vis, false, sizeof(vis));
+        return helper(m, m);
+    }
+};
