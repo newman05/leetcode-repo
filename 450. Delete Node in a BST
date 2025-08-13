@@ -1,0 +1,73 @@
+// Question intution
+/*In this question, we have 2 basic cases we need to handle.
+First of all we iterate over the bst to find the key
+Once we find it , we bifurcate the problem in 2 segments, first where
+the key node has either 1 or no children.
+In that cases simply delete the node
+else 
+if the key node has 2 children then we need to find the inorder successor of the keynode and replace the root->val with successor->value
+once, done , run again the loop but this time delete the successor node, 
+if it itself has 2 children , then it condition runs again till we reach a node that has either 1 or no children*/
+
+
+
+// CODE:
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* succ(TreeNode* node) {
+        node = node -> right ; 
+        while(node!= NULL && node->left != NULL) {
+            node = node-> left ; 
+        }
+        return node ; 
+    }
+
+    TreeNode* deleteNode(TreeNode* root, int key) {
+        if(root == NULL) {
+            return root ; 
+        }
+
+        if(root -> val < key) {
+            root->right = deleteNode(root->right , key) ; 
+        }
+        if(root->val > key) {
+            root->left = deleteNode(root->left , key) ; 
+        }
+        else if(root->val == key) {
+            // matches the key ;
+            if(root->right == nullptr) {
+                TreeNode* temp = root-> left ; 
+                cout<<root->val<<"hi"<<" " ; 
+                delete root ; 
+                return temp ;
+            } 
+            if(root->left == nullptr) {
+                TreeNode* temp = root->right ;
+                 cout<<root->val<<"hi"<<" " ; 
+
+                delete root ; 
+                return temp ; 
+
+            } 
+      
+            else {
+                TreeNode* temp = succ(root) ; 
+                root->val= temp->val ; 
+                root->right = deleteNode(root->right , temp->val) ; 
+            }
+        }
+
+        return root ; 
+    }
+};
