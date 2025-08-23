@@ -1,0 +1,100 @@
+// 1st approach using DFS
+
+class Solution {
+public:
+
+    void dfs(vector<vector<int>>& adj , vector<bool> &visited , int i ) {
+        visited[i] = true ; 
+        for(auto it : adj[i]) {
+            if(!visited[it]) {
+                dfs(adj , visited ,it) ; 
+            }
+        }
+    }
+
+
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        
+        int x = connections.size()  ; 
+        if(x < n - 1 ) {
+            return -1 ; 
+        }
+
+        vector<vector<int>>adj(n) ; 
+
+        for(int i = 0 ; i < x ; i++) {
+            int a = connections[i][0]  ;
+            int b = connections[i][1] ; 
+            adj[a].push_back(b) ; 
+            adj[b].push_back(a)  ;
+        }
+
+        vector<bool>visited(n , false ) ; 
+
+        int ans = 0; 
+
+
+        for(int i = 0; i< n ; i++) {
+            if(!visited[i]) {
+                dfs(adj , visited , i) ; 
+                ans++ ; 
+            }
+        }
+
+        return ans - 1; 
+
+
+
+    }
+};
+
+
+// 2nd approach using DSU
+
+class Solution {
+public:
+    vector<int> parent, rankv;
+
+    int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
+
+    void Union(int x, int y) {
+        int x_parent = find(x);
+        int y_parent = find(y);
+
+        if (x_parent == y_parent) return;
+
+        if (rankv[x_parent] < rankv[y_parent]) {
+            parent[x_parent] = y_parent;
+        }
+        else if (rankv[y_parent] < rankv[x_parent]) {
+            parent[y_parent] = x_parent;
+        }
+        else {
+            parent[y_parent] = x_parent;
+            rankv[x_parent]++;
+        }
+    }
+
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        int x = connections.size();
+        if (x < n - 1) return -1; 
+
+        parent.resize(n);
+        rankv.assign(n, 0);
+        for (int i = 0; i < n; i++) parent[i] = i;
+
+        int components = n;
+
+        for (auto &vec : connections) {
+            if (find(vec[0]) != find(vec[1])) {
+                Union(vec[0], vec[1]);
+                components--;
+            }
+        }
+
+        return components - 1; 
+    }
+};
