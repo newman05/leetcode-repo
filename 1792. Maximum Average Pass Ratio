@@ -1,6 +1,7 @@
 /*
 The idea is to select class which will bring the highest change in pass ratio when an extra stduent is added to it. Hence we could use
 a max heap to calculate that.
+We store "gain" as the value that would be given after we add a student to a class, higher the gain, better the overall ratio
 */
 
 class Solution {
