@@ -1,0 +1,39 @@
+/*
+The idea is to select class which will bring the highest change in pass ratio when an extra stduent is added to it. Hence we could use
+a max heap to calculate that.
+*/
+
+class Solution {
+public:
+    double maxAverageRatio(vector<vector<int>>& classes, int extraStudents) {
+        int n = classes.size();
+        priority_queue<pair<double, pair<int, int>>> pq;
+
+        for (auto &c : classes) {
+            int a = c[0], b = c[1];
+            double gain = ((double)(a + 1) / (b + 1)) - ((double)a / b);
+            pq.push({gain, {a, b}});
+        }
+
+        while (extraStudents--) {
+            auto top = pq.top(); pq.pop();
+            int a = top.second.first;
+            int b = top.second.second;
+
+            a++; b++;
+
+            double newGain = ((double)(a + 1) / (b + 1)) - ((double)a / b);
+            pq.push({newGain, {a, b}});
+        }
+
+        double total = 0.0;
+        while (!pq.empty()) {
+            auto top = pq.top(); pq.pop();
+            int a = top.second.first;
+            int b = top.second.second;
+            total += (double)a / b;
+        }
+
+        return total / n;
+    }
+};
