@@ -1,0 +1,244 @@
+/*
+A fundamental trie question. The idea is to store each word in its own trieNode, then once we have done that, we apply dfs over the grid to find whether if a particular
+word exists in my trie or not. we also keep track of visited trieNode by assigning them with "#" then reverting it back once we are done with that traversal.
+
+This was the main approach to the problem, however one thing to notice is that, when we are done with a word , we dont delete it, leading to extra DFS calls, even if
+its children are NULL,
+hence increasing the average time complexity, (worst case TC would still be the same).
+Hence we use pruning to optimize the code further.
+example-
+
+consider words "apple" , "app" , exist in some board of characters.
+
+a (end=false)
+ └─ p (end=false)
+      └─ p (end=true, word="app")
+           └─ l (end=false)
+                └─ e (end=true, word="apple")
+
+once we are done with "apple" , we will rescind till we reach "end = true", saving some DFS calls.
+a (end=false)
+ └─ p (end=false)
+      └─ p (end=true, word="app")
+           └─ l (end=false)
+
+then finally,
+a (end=false)
+ └─ p (end=false)
+      └─ p (end=true, word="app")
+
+Time and Space complexity:
+
+M = number of rows in the board
+N = number of columns in the board
+W = number of words in the dictionary
+L = average length of the words
+
+SC : O(W x L) [space to create trienodes]
+TC : O(W × L + M × N × 4^L) [W x L : time to create trienodes, plus (M x N x 4^L) : DFS recursion over N rows and M cols, with 4 x L recursion calls over 4 directions]
+
+*/
+
+// without pruning
+class Solution {
+public:
+        int n = 0 ; 
+        int m = 0 ; 
+
+        vector<string> result ; 
+        vector<vector<int>> dirs {{1 , 0} , {0 , 1} , {-1 , 0} , {0 , -1}} ; 
+     struct trieNode {
+        bool end ; 
+        string word ; 
+        trieNode* children[26] ; 
+     };
+     trieNode* getNode() {
+        trieNode* newNode = new trieNode() ; 
+        newNode->end = false ; 
+        newNode->word = "" ; 
+        
+
+        for(int i = 0 ; i < 26 ; i++) {
+            newNode->children[i] = NULL ;
+        }
+        return newNode ; 
+     }
+
+     void insert(trieNode* root , string& word) {
+        trieNode* crawler = root ; 
+
+
+        for(int i = 0 ; i < word.size() ; i++) {
+            char ch= word[i] ; 
+            int idx = ch -'a' ; 
+            if(crawler->children[idx] == NULL) {
+                crawler->children[idx] = getNode() ; 
+            }
+            crawler = crawler->children[idx] ; 
+
+        }
+        crawler->end = true ; 
+        crawler->word = word ; 
+     }
+
+     trieNode* root = getNode() ; 
+
+
+     void findwords(vector<vector<char>>& board ,int i , int j , trieNode* root )
+     {
+        if (i < 0 || i >= n || j < 0 || j >= m) {
+            return;
+        }
+
+
+        if(board[i][j] == '#' || root->children[board[i][j] - 'a'] == NULL) {
+            return; 
+        }
+
+        root = root-> children[board[i][j] - 'a'] ; 
+
+        if(root->end) {
+            result.push_back(root->word) ; 
+            root->end = false ; 
+        }
+
+        char temp = board[i][j] ; 
+        board[i][j] = '#' ; 
+
+        // left , right , up , down 
+
+        for(vector<int>& dir : dirs) {
+            int new_i = i + dir[0] ; 
+            int new_j = j + dir[1] ; 
+
+            findwords(board , new_i , new_j , root) ; 
+        }
+
+        board[i][j] = temp ; 
+
+     }
+
+
+
+    vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
+         n = board.size() ; 
+         m = board[0].size() ; 
+
+
+         for(string &word : words) {
+            insert(root , word) ; 
+         }
+        
+        for(int i = 0 ; i < n ; i++) {
+            for(int j = 0 ; j < m ; j++) {
+                
+                    findwords(board , i , j , root); 
+                
+            }
+        }
+
+        return result ; 
+
+    }
+};
+
+// with pruning
+class Solution {
+public:
+    int n = 0;
+    int m = 0;
+
+    vector<string> result;
+    vector<vector<int>> dirs{{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+    struct trieNode {
+        bool end;
+        string word;
+        trieNode* children[26];
+    };
+    trieNode* getNode() {
+        trieNode* newNode = new trieNode();
+        newNode->end = false;
+        newNode->word = "";
+
+        for (int i = 0; i < 26; i++) {
+            newNode->children[i] = NULL;
+        }
+        return newNode;
+    }
+
+    void insert(trieNode* root, string& word) {
+        trieNode* crawler = root;
+
+        for (int i = 0; i < word.size(); i++) {
+            char ch = word[i];
+            int idx = ch - 'a';
+            if (crawler->children[idx] == NULL) {
+                crawler->children[idx] = getNode();
+            }
+            crawler = crawler->children[idx];
+        }
+        crawler->end = true;
+        crawler->word = word;
+    }
+
+    trieNode* root = getNode();
+
+    bool isEmpty(trieNode* node) {
+        for (int i = 0; i < 26; i++)
+            if (node->children[i])
+                return false;
+        return true;
+    }
+
+    void findwords(vector<vector<char>>& board, int i, int j, trieNode*& root) {
+        if (i < 0 || i >= n || j < 0 || j >= m) {
+            return;
+        }
+
+        char c = board[i][j];
+        if (c == '#' || root->children[c - 'a'] == NULL) {
+            return;
+        }
+
+        int idx = c - 'a';
+        trieNode* child = root->children[idx];
+        
+        if (child->end) {
+            result.push_back(child->word);
+            child->end = false;
+        }
+
+        board[i][j] = '#';
+
+        for (vector<int>& dir : dirs) {
+            int new_i = i + dir[0];
+            int new_j = j + dir[1];
+            findwords(board, new_i, new_j, child);
+        }
+
+        board[i][j] = c;
+        //pruning
+        if (!child->end && isEmpty(child)) {
+            delete child;
+            root->children[idx] = NULL;
+        }
+    }
+
+    vector<string> findWords(vector<vector<char>>& board,vector<string>& words) {
+        n = board.size();
+        m = board[0].size();
+
+        for (string& word : words) {
+            insert(root, word);
+        }
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                findwords(board, i, j, root);
+            }
+        }
+
+        return result;
+    }
+};
