@@ -1,0 +1,89 @@
+/*
+the basic XOR property==> (x ^x) = 0 , (x ^ y) = 1 ;
+hence if i create a trie where i store 0 bits to the left and 1 bits to the right then i can solve this question. this is a bit like huffman.
+to find the max xor , what i will do is find the optimal path for the num in an array by going to left or right depending on the bit set( or not) 
+at that position.
+
+*/
+
+class Solution {
+public:
+
+    struct trieNode {
+        trieNode* left ; 
+        trieNode* right ; 
+    } ; 
+
+
+    void insert(trieNode* root , int num) {
+        trieNode* crawl = root ; 
+
+        for(int i = 31; i >= 0 ; i--) {
+            int ibit = (num >> i ) & 1 ; 
+            if(ibit == 1 ) {
+                if(crawl->left == NULL) {
+                    crawl->left = new trieNode() ; 
+                }
+                crawl = crawl -> left ; 
+            }
+            else {
+                  if(crawl->right == NULL) {
+                    crawl->right = new trieNode() ; 
+                }
+                crawl = crawl->right ; 
+            }
+        }
+
+
+    }
+
+    int findxor(trieNode* root , int num) {
+        int cnt = 0 ; 
+        trieNode* ok = root ;
+
+        for(int i = 31 ; i >= 0 ; i--) {
+            int ibit = (num >> i) & 1 ; 
+            if(ibit == 0 ) {
+                if(ok->left != NULL) {
+                    cnt = cnt + pow(2 , i) ;
+                    ok = ok->left ; 
+                }
+                else {
+                    ok = ok -> right ; 
+                }
+            }
+            else {
+                 if(ok->right != NULL) {
+                    cnt = cnt + pow(2 , i) ;
+                    ok = ok->right ; 
+                }
+                else {
+                    ok = ok -> left ; 
+                }
+            }
+        }
+        return cnt ; 
+
+    } 
+
+
+    int findMaximumXOR(vector<int>& nums) {
+        int mx = 0 ; 
+        trieNode* root = new trieNode() ; 
+
+        int n = nums.size(); 
+
+        for(int i = 0 ; i <n ; i++) {
+            insert(root , nums[i]) ; 
+        }
+
+        for(int i = 0 ; i < n ; i++) {
+            int temp = findxor(root , nums[i]) ;
+
+            mx = max(mx , temp) ;
+        }
+       
+
+        return mx ; 
+    }
+};
