@@ -1,0 +1,25 @@
+/*POTD- 12/9/2025*/
+
+
+
+class Solution {
+public:
+    bool isvowel(char ch) { return (ch == 'a') || (ch == 'e') ||(ch == 'i') ||(ch == 'o') ||(ch == 'u'); }
+
+    bool doesAliceWin(string s) {
+        int n = s.size() ; 
+        int cnt = 0 ; 
+        for(auto x : s) {
+            if(isvowel(x)) cnt++ ; 
+        }
+
+        if(cnt ==0 ) return false ; 
+   
+        return true ; 
+        
+
+
+
+
+    }
+};
