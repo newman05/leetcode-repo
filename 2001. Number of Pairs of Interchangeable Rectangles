@@ -1,0 +1,36 @@
+/*
+The idea is to map similar ratios together in a map any other data structure. after than we simply count the interchangable rectangles by (n * (n - 1 )) / 2 and add it
+with the frequencies
+TC: O(n)
+SC:O(n)
+*/
+
+class Solution {
+public:
+    long long interchangeableRectangles(vector<vector<int>>& rectangles) {
+        int n = rectangles.size() ; 
+        long long cnt =0 ;
+
+        unordered_map<double , long long>mpp ; 
+
+        for(int i = 0 ; i <n ; i++) {
+            double a = (double)rectangles[i][0] ; 
+            double b = (double)rectangles[i][1] ; 
+            mpp[a/b]++ ;  
+
+        }
+        
+
+        for(auto it : mpp) {
+            cnt = cnt + (it.second * (it.second - 1 )) / 2 ; 
+        }
+
+        return cnt ; 
+
+
+
+
+
+
+    }
+};
