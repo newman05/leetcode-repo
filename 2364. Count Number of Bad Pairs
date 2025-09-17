@@ -1,0 +1,29 @@
+/*
+Simplify the equation j - i = nums[j] - nums[i] into nums[i] - i = nums[j] - j
+and then map the frequency of such pairs.
+after this calculate total possible pairs by (n * (n - 1)) /2 
+reduce these pairs by multi frequency good pairs
+giving us the bad pairs remaning
+TC : O(n)
+SC: O(n)
+*/
+
+class Solution {
+public:
+    long long countBadPairs(vector<int>& nums) {
+        long long n = nums.size() ; 
+        long long ans = (n * (n - 1))/2 ; 
+
+        unordered_map<long long , long long>mpp ; 
+        for(int i = 0; i < n ; i++) {
+            mpp[nums[i] -i ]++; 
+        }
+
+        for(auto it :mpp ){
+            ans = ans - (it.second * (it.second - 1))/ 2 ; 
+        }
+        return ans ; 
+
+
+    }
+};
