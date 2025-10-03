@@ -1,0 +1,53 @@
+
+// Brute Force, Iterate over all subarrays, for some reason even this solution got accepted
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = INT_MIN;
+
+        for(int i = 0; i < n; i++) {
+            int ok = 1;
+            for(int j = i; j < n; j++) {
+                ok = ok * nums[j];
+                maxi = max(maxi, ok);
+            }
+        }
+        return maxi;
+    }
+};
+
+// optimized with kadane
+/*
+The idea here is to understand that two negatives multiplied will always give a positive, we need to maintain a currmin variable,
+which in actuality stores the maximum negative product. we do this so that whenever we find another matching negative, we can swap 
+this value with the currmax and get the new max, while the currmin now holds the value of the previous currmax.
+*/
+
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = nums[0];
+
+        int currmax = nums[0] ;
+        int currmin = nums[0] ;
+
+        for(int i = 1; i < n ; i++) {
+            if(nums[i] < 0) {
+                swap(currmax , currmin) ;
+            }
+
+            currmax = max(nums[i] , currmax * nums[i]) ;
+            currmin = min(nums[i] , currmin * nums[i]) ; 
+
+            maxi = max(maxi , currmax); 
+
+        }
+        return maxi ; 
+
+        
+
+        return maxi;
+    }
+};
