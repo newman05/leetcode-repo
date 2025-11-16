@@ -1,0 +1,41 @@
+/* we will use the concept of digit dp,
+very standard digit dp problem, so the thing is ki,
+dp[idx][tight] is standard format , with more or less parameters depending on the problem itself
+*/
+
+class Solution {
+public:
+
+    int dp[20][2][20] ;
+
+
+    int solve(string &s , int idx , int tight , int cnt) {
+        if(idx == s.size() ) {
+            return cnt ; 
+
+        }
+        if(dp[idx][tight][cnt] != -1) {
+            return dp[idx][tight][cnt] ; 
+        }
+
+        int ans =0 ;
+
+        int limit = (tight == 1 ? s[idx] - '0' : 9) ; 
+
+        for(int d = 0; d <= limit; d++) {
+            int ok = cnt + (d == 1 ? 1 : 0) ; 
+            ans += solve(s, idx + 1, (tight & (d == s[idx] - '0')) , ok) ; 
+        }
+
+        return dp[idx][tight][cnt] =  ans ; 
+    }
+
+    int countDigitOne(int n) {
+        string s = to_string(n) ; 
+        memset(dp , -1 , sizeof(dp)) ; 
+
+        int ans = solve(s , 0 ,1 , 0) ;
+
+        return ans ; 
+    }
+};
